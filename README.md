@@ -2,11 +2,11 @@
 ## Тема : Moodle платформа
 
 ### Технологије:
-- ***PHP 5
-- ***Bootstrap
-- ***ResponsiveCSS
-- ***Apache2
-- ***MySql
+- ***PHP5***
+- ***Bootstrap***
+- ***ResponsiveCSS***
+- ***Apache2***
+- ***MySql***
 
 ### Опис пројекта: 
 
