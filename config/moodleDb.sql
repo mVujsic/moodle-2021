@@ -1,13 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 4.6.6deb5
+-- version 5.0.2
 -- https://www.phpmyadmin.net/
 --
--- Host: localhost:3306
--- Generation Time: Oct 30, 2020 at 08:51 PM
--- Server version: 5.7.32-0ubuntu0.18.04.1
--- PHP Version: 7.2.24-0ubuntu0.18.04.7
+-- Host: 127.0.0.1:3306
+-- Generation Time: Nov 05, 2020 at 09:48 PM
+-- Server version: 5.7.31
+-- PHP Version: 7.3.21
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+START TRANSACTION;
 SET time_zone = "+00:00";
 
 
@@ -17,8 +18,22 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `moodleDb`
+-- Database: `moodle`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `drzi`
+--
+
+DROP TABLE IF EXISTS `drzi`;
+CREATE TABLE IF NOT EXISTS `drzi` (
+  `kursID` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `idNastavnika` int(4) NOT NULL,
+  KEY `FK kurs` (`kursID`),
+  KEY `FK nastavnik` (`idNastavnika`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -26,64 +41,76 @@ SET time_zone = "+00:00";
 -- Table structure for table `item`
 --
 
-CREATE TABLE `item` (
-  `itemId` int(9) NOT NULL,
+DROP TABLE IF EXISTS `item`;
+CREATE TABLE IF NOT EXISTS `item` (
+  `itemId` int(9) NOT NULL AUTO_INCREMENT,
   `brTeme` int(2) NOT NULL,
   `redBroj` int(2) NOT NULL,
-  `naziv` varchar(255) COLLATE utf8_bin NOT NULL,
-  `tip` varchar(5) COLLATE utf8_bin NOT NULL,
-  `lokacija` varchar(255) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `naziv` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tip` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `lokacija` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`itemId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `kursevi`
+-- Table structure for table `kurs`
 --
 
-CREATE TABLE `kursevi` (
-  `kursId` varchar(255) COLLATE utf8_bin NOT NULL,
-  `pristupniKod` varchar(6) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+DROP TABLE IF EXISTS `kurs`;
+CREATE TABLE IF NOT EXISTS `kurs` (
+  `kursId` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `pristupniKod` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
+  KEY `Foreign key` (`kursId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `nalozi`
+-- Table structure for table `nalog`
 --
 
-CREATE TABLE `nalozi` (
-  `email` varchar(255) COLLATE utf8_bin NOT NULL,
-  `sifra` varchar(255) COLLATE utf8_bin NOT NULL,
-  `tip` varchar(255) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+DROP TABLE IF EXISTS `nalog`;
+CREATE TABLE IF NOT EXISTS `nalog` (
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `sifra` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `tip` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `nastavnici`
+-- Table structure for table `nastavnik`
 --
 
-CREATE TABLE `nastavnici` (
+DROP TABLE IF EXISTS `nastavnik`;
+CREATE TABLE IF NOT EXISTS `nastavnik` (
   `idNastavnika` int(4) NOT NULL,
-  `ime` varchar(255) COLLATE utf8_bin NOT NULL,
-  `prezime` varchar(255) COLLATE utf8_bin NOT NULL,
-  `email` varchar(255) COLLATE utf8_bin NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `ime` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `prezime` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`idNastavnika`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `predmeti`
+-- Table structure for table `predmet`
 --
 
-CREATE TABLE `predmeti` (
-  `sifraPred` varchar(255) COLLATE utf8_bin NOT NULL,
-  `naziv` varchar(255) COLLATE utf8_bin NOT NULL,
+DROP TABLE IF EXISTS `predmet`;
+CREATE TABLE IF NOT EXISTS `predmet` (
+  `sifraPred` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `naziv` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `espb` int(1) NOT NULL DEFAULT '6',
   `brSemestra` int(1) NOT NULL,
-  `smerId` int(2) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `smerID` int(10) NOT NULL DEFAULT '1',
+  PRIMARY KEY (`sifraPred`),
+  UNIQUE KEY `naziv` (`naziv`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
@@ -91,109 +118,78 @@ CREATE TABLE `predmeti` (
 -- Table structure for table `sadrzaj`
 --
 
-CREATE TABLE `sadrzaj` (
-  `kursId` varchar(255) COLLATE utf8_bin NOT NULL,
-  `itemId` int(9) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+DROP TABLE IF EXISTS `sadrzaj`;
+CREATE TABLE IF NOT EXISTS `sadrzaj` (
+  `kursId` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `itemId` int(9) NOT NULL,
+  KEY `kursKljuc` (`kursId`),
+  KEY `itemKljuc` (`itemId`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 -- --------------------------------------------------------
 
 --
--- Table structure for table `studenti`
+-- Table structure for table `smer`
 --
 
-CREATE TABLE `studenti` (
-  `brIndeks` varchar(8) COLLATE utf8_bin NOT NULL,
-  `ime` varchar(255) COLLATE utf8_bin NOT NULL,
-  `prezime` varchar(255) COLLATE utf8_bin NOT NULL,
-  `email` varchar(255) COLLATE utf8_bin NOT NULL,
+DROP TABLE IF EXISTS `smer`;
+CREATE TABLE IF NOT EXISTS `smer` (
+  `smerID` int(11) NOT NULL AUTO_INCREMENT,
+  `naziv` varchar(60) COLLATE utf8mb4_bin NOT NULL,
+  PRIMARY KEY (`smerID`)
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_bin;
+
+--
+-- Dumping data for table `smer`
+--
+
+INSERT INTO `smer` (`smerID`, `naziv`) VALUES
+(1, 'Машинство'),
+(2, 'Рачунарска техника и софтверско инжењерство');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `student`
+--
+
+DROP TABLE IF EXISTS `student`;
+CREATE TABLE IF NOT EXISTS `student` (
+  `brIndeks` varchar(8) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `ime` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `prezime` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `email` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `upisanSemestar` int(1) NOT NULL,
   `kojiPutSlusaGod` int(11) NOT NULL DEFAULT '1',
-  `osvojeniEspb` int(3) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8 COLLATE=utf8_bin;
+  `osvojeniEspb` int(3) NOT NULL DEFAULT '0',
+  PRIMARY KEY (`brIndeks`),
+  UNIQUE KEY `email` (`email`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
---
--- Indexes for dumped tables
---
-
---
--- Indexes for table `item`
---
-ALTER TABLE `item`
-  ADD PRIMARY KEY (`itemId`);
-
---
--- Indexes for table `kursevi`
---
-ALTER TABLE `kursevi`
-  ADD KEY `Foreign key` (`kursId`);
-
---
--- Indexes for table `nalozi`
---
-ALTER TABLE `nalozi`
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indexes for table `nastavnici`
---
-ALTER TABLE `nastavnici`
-  ADD PRIMARY KEY (`idNastavnika`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- Indexes for table `predmeti`
---
-ALTER TABLE `predmeti`
-  ADD PRIMARY KEY (`sifraPred`),
-  ADD UNIQUE KEY `naziv` (`naziv`);
-
---
--- Indexes for table `sadrzaj`
---
-ALTER TABLE `sadrzaj`
-  ADD KEY `kursKljuc` (`kursId`),
-  ADD KEY `itemKljuc` (`itemId`);
-
---
--- Indexes for table `studenti`
---
-ALTER TABLE `studenti`
-  ADD PRIMARY KEY (`brIndeks`),
-  ADD UNIQUE KEY `email` (`email`);
-
---
--- AUTO_INCREMENT for dumped tables
---
-
---
--- AUTO_INCREMENT for table `item`
---
-ALTER TABLE `item`
-  MODIFY `itemId` int(9) NOT NULL AUTO_INCREMENT;
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `kursevi`
+-- Constraints for table `drzi`
 --
-ALTER TABLE `kursevi`
-  ADD CONSTRAINT `Foreign key` FOREIGN KEY (`kursId`) REFERENCES `predmeti` (`sifraPred`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `drzi`
+  ADD CONSTRAINT `FK kurs` FOREIGN KEY (`kursID`) REFERENCES `kurs` (`kursId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  ADD CONSTRAINT `FK nastavnik` FOREIGN KEY (`idNastavnika`) REFERENCES `nastavnik` (`idNastavnika`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
--- Constraints for table `nalozi`
+-- Constraints for table `nalog`
 --
-ALTER TABLE `nalozi`
-  ADD CONSTRAINT `emailConstraintNastavnik` FOREIGN KEY (`email`) REFERENCES `nastavnici` (`email`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `emailConstraintStudent` FOREIGN KEY (`email`) REFERENCES `studenti` (`email`) ON DELETE CASCADE ON UPDATE CASCADE;
+ALTER TABLE `nalog`
+  ADD CONSTRAINT `emailConstraintStudent` FOREIGN KEY (`email`) REFERENCES `student` (`email`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `sadrzaj`
 --
 ALTER TABLE `sadrzaj`
   ADD CONSTRAINT `itemKljuc` FOREIGN KEY (`itemId`) REFERENCES `item` (`itemId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `kursKljuc` FOREIGN KEY (`kursId`) REFERENCES `kursevi` (`kursId`) ON DELETE CASCADE ON UPDATE CASCADE;
+  ADD CONSTRAINT `kursKljuc` FOREIGN KEY (`kursId`) REFERENCES `kurs` (`kursId`) ON DELETE CASCADE ON UPDATE CASCADE;
+COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
 /*!40101 SET CHARACTER_SET_RESULTS=@OLD_CHARACTER_SET_RESULTS */;
