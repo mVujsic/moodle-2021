@@ -1,0 +1,23 @@
+:root{
+    --bggradient: linear-gradient(to bottom, #0f1ccf, #fafafa);
+}
+
+.bg{
+    background: #3009dd;
+    background: var(--bggradient);
+}
+
+.form-container{
+    background: #fff;
+    padding:30px;
+    border-radius: 10px;
+    box-shadow: 0px 0px 10px 0px #000;
+    position: relative;
+    top: 15vh;
+}
+.container-fluid .links {
+    margin-right: 30px;
+    top: 15vh;
+    position: relative;
+
+}
