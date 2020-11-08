@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 05, 2020 at 09:48 PM
+-- Generation Time: Nov 08, 2020 at 06:12 PM
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
@@ -65,6 +65,16 @@ CREATE TABLE IF NOT EXISTS `kurs` (
   KEY `Foreign key` (`kursId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `kurs`
+--
+
+INSERT INTO `kurs` (`kursId`, `pristupniKod`) VALUES
+('BRTSI4000', '323fee'),
+('BRTSI4001', 'asdfg1'),
+('BRTSI4002', 'asd123'),
+('OMI30003', '123qwe');
+
 -- --------------------------------------------------------
 
 --
@@ -94,6 +104,27 @@ CREATE TABLE IF NOT EXISTS `nastavnik` (
   PRIMARY KEY (`idNastavnika`),
   UNIQUE KEY `email` (`email`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `nastavnik`
+--
+
+INSERT INTO `nastavnik` (`idNastavnika`, `ime`, `prezime`, `email`) VALUES
+(100, 'Вук', 'Вуковић', 'vuk.vukovic@gmail.com'),
+(101, 'Владан', 'Матовић', 'vladamatovic@gmail.com');
+
+-- --------------------------------------------------------
+
+--
+-- Table structure for table `pohadja`
+--
+
+DROP TABLE IF EXISTS `pohadja`;
+CREATE TABLE IF NOT EXISTS `pohadja` (
+  `studentID` int(11) NOT NULL,
+  `kursID` varchar(10) NOT NULL,
+  PRIMARY KEY (`studentID`,`kursID`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1;
 
 -- --------------------------------------------------------
 
