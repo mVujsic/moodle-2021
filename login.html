@@ -14,25 +14,32 @@
     <div class="container-fluid bg">
         <div class="row justify-content-center">
             <div class="col-12 col-sm-8 col-md-4">
-                <form class="form-container" method="POST" action="./login.php">
+                <div class="info">
+                   <h4>Портал за е-учење</h4>
+                </div>
+            </div>
+        </div>
+        <div class="row justify-content-center">
+            <div class="col-12 col-sm-8 col-md-4">
+                <form class="form-container" method="POST" action="">
                     <div class="form-group">
                         <label for=""><b>Пријави се</b></label><br>
                         <label for="exampleInputEmail1">Адреса е-поште</label>
-                        <input type="email" name='username' class="form-control" id="exampleInputEmail1" required>
-                        <small id="emailHelp" class="form-text text-muted">Немате налог? Додате налог <a
-                                href="./add.php">ОВДЕ.</a></small>
+                        <input type="email" name='username' class="form-control" id="uname" required placeholder="ваша e-mail адреса">
+                        <small id="emailHelp" class="form-text text-muted"> <a
+                                href=""></a></small>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1">Шифра</label>
-                        <input type="password" name='password' class="form-control" id="exampleInputPassword1" required>
+                        <input type="password" name='password' class="form-control" id="pass" required placeholder="унесите шифру овде">
                         <small id="emailHelp" class="form-text text-muted"><span
-                                class="help-block"><?php echo $username_or_passwd_err; ?></span></small>
+                                class="help-block"></span></small>
                     </div>
                     <div class="form-group form-check">
                     </div>
                     <button type="submit" class="btn btn-primary btn-block">Потврди</button><br>
                     <div class="container-fluid">
-                        <a href="./index.html" class="btn btn-primary btn-lg active link1 btn-block" role="button"
+                        <a href="" class="btn btn-primary btn-lg active link1 btn-block" role="button"
                             aria-pressed="true">Почетна</a>
 
                     </div>
