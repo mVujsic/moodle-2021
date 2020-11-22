@@ -26,7 +26,7 @@
 
 $servername = "localhost";
 $username = "root";
-$password = " ";//uneti sifru
+$password = "";//uneti sifru
 
 try {
   $conn = new PDO("mysql:host=$servername;dbname=moodle_db", $username, $password);
