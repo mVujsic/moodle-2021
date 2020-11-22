@@ -97,9 +97,9 @@ $fetched = $stmt->fetchAll();
   </div>
 </nav>
 
-<div style="padding-left: 50px; padding-right: 50px;background-image: url('headerbg.jpg');">
+<div style="padding-left: 50px; padding-right: 50px;background-image: url('pics/headerbg.jpg');">
 <div class="headerlogo" style="background-color: white; ">
-    <img src="FINK-logo-450.png" style="margin-top: 50px; max-width:100%;"
+    <img src="pics/FINK-logo-450.png" style="margin-top: 50px; max-width:100%;"
     class="img-fluid" alt="Responsive image">
 </div>
 

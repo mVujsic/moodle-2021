@@ -10,6 +10,7 @@ try {
     $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
   } catch(PDOException $e) {
     echo "Connection failed: " . $e->getMessage();
+    die();
   }
 
   $_GET['brIndeksa'] = '6352017'; //za test
@@ -19,9 +20,6 @@ $stmt->execute();
 
 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $fetched = $stmt->fetch();
-
-var_dump($fetched);
-echo(empty($fetched)? 'empty':'not empty');
 
 if (!empty($fetched)){
     $stmtCheck = $conn->prepare('SELECT * FROM pohadja WHERE kursID = "'.$fetched["kursId"].'" AND studentID = '.intval($_GET["brIndeksa"]).'');
