@@ -1,9 +1,9 @@
 :root{
-    --bggradient: linear-gradient(to bottom, #6b9bf3, #fafafa);
+    --bggradient: linear-gradient(to bottom, #0b3b9c, #fafafa);
 }
 
 .bg{
-    background: #110252;
+    background: #080129;
     background: var(--bggradient);
 }
 
@@ -11,7 +11,7 @@
     background: #fff;
     padding:30px;
     border-radius: 10px;
-    box-shadow: 0px 0px 10px 0px rgb(87, 86, 86);
+    box-shadow: 0px 0px 20px 0px rgb(39, 38, 38);
     position: relative;
     top: 1vh;
 }
@@ -24,4 +24,5 @@
 .info{
     position: relative;
     top: 0vh;
+    font-size: 45fr;
 }
