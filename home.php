@@ -36,9 +36,13 @@ try {
   echo "Connection failed: " . $e->getMessage();
 }
 
-$_GET['brIndeksa'] = '6352017'; //za test
+$_GET['studentID'] = '617-2017'; 
+//ПРОМЕНА $_SESSION['email'] ТО ЈЕ ДОШЛО СА login.php dakle mora neko joinovanje(pogledaj malo sam izmenio bazu)
+//Smeti sve podatke iz student tabele u $_SESSION niz
 
-$stmt = $conn->prepare('SELECT * FROM pohadja WHERE studentID = "'.intval($_GET["brIndeksa"]).'"');
+
+
+$stmt = $conn->prepare('SELECT * FROM pohadja WHERE studentID = "'.$_GET["studentID"].'"');
 $stmt->execute();
 
 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -77,7 +81,7 @@ $fetched = $stmt->fetchAll();
           <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-top:10%; background-color: black; border:none;">
               <?php 
-              $stmtStudent = $conn->prepare('SELECT * FROM student WHERE brIndeks = "'.intval($_GET["brIndeksa"]).'"');
+              $stmtStudent = $conn->prepare('SELECT * FROM student WHERE studentID = "'.intval($_GET["studentID"]).'"');
               $stmtStudent->execute();
               
               $result = $stmtStudent->setFetchMode(PDO::FETCH_ASSOC);
@@ -86,9 +90,9 @@ $fetched = $stmt->fetchAll();
              ?>
             <span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li><a href="login.php">Odjava</a></li>
+              <li><form action="./config/logout.php" method="post"><button type="submit">Одјави се</button></form></li> 
               <li><a href="menjanjeSifre.php">Промена шифре</a></li>
-              <li><a href=<?php echo("user/profile.php?id=" . $_GET["brIndeksa"]);?>>Профил</a></li>
+              <li><a href=<?php echo("user/profile.php?id=" . $_GET["studentID"]);?>>Профил</a></li>
             </ul>
           </div>
         </li>

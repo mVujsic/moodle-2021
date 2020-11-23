@@ -7,22 +7,24 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
         integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" crossorigin="anonymous">
-    <title>Добродошли</title>
+    <title>Добродошли на е-учење</title>
 </head>
 
 <?php
     require_once "./config/PDOconfig.php" ;
-    $username_or_passwd_err="";
-
+    $username_or_passwd_err="E-mail мора бити облика xxx@xx.xx";
+    $br_pokusaja=0; //TODO
+    $isProf=false;
+    
     if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-        header("location: home2.php");
+        header("location: home.php");
         exit;
     }
      
 
     if(isset($_POST['email'])){
           
-            $sql = "SELECT email, sifra, brIndeks, ime, prezime FROM nalog n INNER JOIN student s on n.email=s.email AND email = :email";
+            $sql = "SELECT email, sifra FROM nalog WHERE email = :email";
             
             if($stmt = $pdo->prepare($sql)){
                 
@@ -37,27 +39,24 @@
                     if($stmt->rowCount() == 1){
                         if($row = $stmt->fetch()){
                             $email = $row["email"];
+                           
                             $hashed_password = $row["sifra"];
-                            $ime=$row["ime"];
-                            $prezime=$row["prezime"];
 
                             
-                            $password = $_POST['password'];
+                            $password = hash('sha1', $_POST['password']);
 
-                            if(password_verify(sha1($password), $hashed_password)){
+                            if($password == $hashed_password){
                                
                                 session_start();
                                 
-                               //Postavka Session variabli
+                               //Postavka Session promenljivih
                                 $_SESSION["loggedin"] = true;
                                 $_SESSION["email"] = $email;
-                                $_SESSION["ime"]=$ime;
-                                $_SESSION["prezime"]=$prezime;
 
-                                if($_SESSION["email"]=="admin@fink.rs"){
+                                if($_SESSION["email"]=="admin@mfkg.rs"){
                                     header("location: admin.html");
                                 }else
-                                      header("location: home2.php");
+                                      header("location: home.php");
                             } else{
                                
                                 $username_or_passwd_err  = "Погрешна шифра.";
@@ -100,9 +99,9 @@
                     <div class="form-group">
                         <label for="" style="font-size: 25px;">Пријавна форма</label><br><br>
                         <label for="exampleInputEmail1"><b>Адреса е-поште:</b></label>
-                        <input type="email" name='username' class="form-control" id="uname" required
+                        <input type="email" name='email' class="form-control" id="email" required
                             placeholder="Ваша e-mail адреса">
-                        <small id="emailHelp" class="form-text text-muted"><span class="help-block"><?php echo $username_or_passwd_err; ?></span></small>
+                        <small id="emailHelp" class="form-text text-muted"><span class="help-block" style="color:red"><?php echo $username_or_passwd_err; ?></span></small>
                     </div>
                     <div class="form-group">
                         <label for="exampleInputPassword1"><b>Шифра:</b></label>

@@ -13,7 +13,7 @@ try {
     die();
   }
 
-  $_GET['brIndeksa'] = '6352017'; //za test
+  $_GET['studentID'] = '635-2017'; //ISTO PROMENA
 
 $stmt = $conn->prepare('SELECT * FROM kurs WHERE pristupniKod = "'.$_POST["courseCode"].'"');
 $stmt->execute();
