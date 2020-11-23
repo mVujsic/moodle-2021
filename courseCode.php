@@ -3,7 +3,7 @@
 try {
     $servername = "localhost";
     $username = "root";
-    $password = " "; //uneti sifru
+    $password = ""; //uneti sifru
 
     $conn = new PDO("mysql:host=$servername;dbname=moodle_db", $username, $password);
     // set the PDO error mode to exception
@@ -41,7 +41,7 @@ if (!empty($fetched)){
     die();
 }
 else{
-    echo('<h3>Неисправан код</h3><form method="post" action="courseCode.php">
+    echo('<h3 align=center>Неисправан код</h3><form method="post" action="courseCode.php">
     <input type="text" name="courseCode">
     <input type="submit" value="Submit">
   </form>');
