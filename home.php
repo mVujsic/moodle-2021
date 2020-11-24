@@ -24,25 +24,21 @@
 <body>
 <?php
 
-$servername = "localhost";
-$username = "root";
-$password = "";//uneti sifru
+require_once "./config/PDOconfig.php" ;
 
-try {
-  $conn = new PDO("mysql:host=$servername;dbname=moodle_db", $username, $password);
-  // set the PDO error mode to exception
-  $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-} catch(PDOException $e) {
-  echo "Connection failed: " . $e->getMessage();
-}
-
-$_GET['studentID'] = '617-2017'; 
+$_SESSION['email']='mateja@gmail.com'; //za testiranje
 //ПРОМЕНА $_SESSION['email'] ТО ЈЕ ДОШЛО СА login.php dakle mora neko joinovanje(pogledaj malo sam izmenio bazu)
 //Smeti sve podatke iz student tabele u $_SESSION niz
 
+$studentIDstmt = $pdo->prepare('SELECT * FROM student WHERE email = "'.$_SESSION["email"].'"');
+$studentIDstmt->execute();
 
+$studentIDresult = $studentIDstmt->setFetchMode(PDO::FETCH_ASSOC);
+$studentIDfetched = $studentIDstmt->fetch();
 
-$stmt = $conn->prepare('SELECT * FROM pohadja WHERE studentID = "'.$_GET["studentID"].'"');
+$_SESSION['studentID'] = $studentIDfetched["studentID"];
+
+$stmt = $pdo->prepare('SELECT * FROM pohadja WHERE studentID = "'.$_SESSION['studentID'].'"');
 $stmt->execute();
 
 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -81,7 +77,7 @@ $fetched = $stmt->fetchAll();
           <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-top:10%; background-color: black; border:none;">
               <?php 
-              $stmtStudent = $conn->prepare('SELECT * FROM student WHERE studentID = "'.intval($_GET["studentID"]).'"');
+              $stmtStudent = $pdo->prepare('SELECT * FROM student WHERE studentID = "'.intval($_SESSION['studentID']).'"');
               $stmtStudent->execute();
               
               $result = $stmtStudent->setFetchMode(PDO::FETCH_ASSOC);
@@ -92,7 +88,7 @@ $fetched = $stmt->fetchAll();
             <ul class="dropdown-menu">
               <li><form action="./config/logout.php" method="post"><button type="submit">Одјави се</button></form></li> 
               <li><a href="menjanjeSifre.php">Промена шифре</a></li>
-              <li><a href=<?php echo("user/profile.php?id=" . $_GET["studentID"]);?>>Профил</a></li>
+              <li><a href=<?php echo("user/profile.php?id=" . $_SESSION['studentID']);?>>Профил</a></li>
             </ul>
           </div>
         </li>
@@ -132,7 +128,7 @@ $fetched = $stmt->fetchAll();
   echo('<div class="row">');
   $counter = 0;
   foreach($fetched as $key => $value){
-      $stmtPredmet = $conn->prepare('SELECT * FROM predmet WHERE sifraPred = "'.$value["kursID"].'"');
+      $stmtPredmet = $pdo->prepare('SELECT * FROM predmet WHERE sifraPred = "'.$value["kursID"].'"');
       $stmtPredmet->execute();
       $result = $stmtPredmet->setFetchMode(PDO::FETCH_ASSOC);
       $predmet = $stmtPredmet->fetch();
