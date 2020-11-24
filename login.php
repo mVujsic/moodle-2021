@@ -11,8 +11,12 @@
 </head>
 
 <?php
+    session_start();
+
     require_once "./config/PDOconfig.php" ;
+    
     $username_or_passwd_err="E-mail мора бити облика xxx@xx.xx";
+
     $br_pokusaja=0; //TODO
     $isProf=false;
     
@@ -47,7 +51,7 @@
 
                             if($password == $hashed_password){
                                
-                                session_start();
+                                
                                 
                                //Postavka Session promenljivih
                                 $_SESSION["loggedin"] = true;

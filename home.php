@@ -19,6 +19,7 @@
       background-color: #f2f2f2;
       padding: 25px;
     }
+    
   </style>
 </head>
 <body>
@@ -26,9 +27,12 @@
 
 require_once "./config/PDOconfig.php" ;
 
-$_SESSION['email']='mateja@gmail.com'; //za testiranje
-//ПРОМЕНА $_SESSION['email'] ТО ЈЕ ДОШЛО СА login.php dakle mora neko joinovanje(pogledaj malo sam izmenio bazu)
-//Smeti sve podatke iz student tabele u $_SESSION niz
+session_start();
+
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+  header("location: login.php");
+  exit;
+}
 
 $studentIDstmt = $pdo->prepare('SELECT * FROM student WHERE email = "'.$_SESSION["email"].'"');
 $studentIDstmt->execute();
@@ -158,6 +162,7 @@ $fetched = $stmt->fetchAll();
 <!--<footer class="container-fluid text-center">
   <p>Footer Text</p>
 </footer> -->
+
 </div>
 </body>
 </html>
