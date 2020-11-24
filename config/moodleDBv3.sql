@@ -7,6 +7,8 @@
 -- Server version: 5.7.31
 -- PHP Version: 7.3.21
 
+USE moodle_db;
+
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
 SET time_zone = "+00:00";
