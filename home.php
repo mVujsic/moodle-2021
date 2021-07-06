@@ -74,7 +74,7 @@ $fetched = $stmt->fetchAll();
           </ul></div>
         </li>
         <li class="active"><a href="#">Контролни панел</a></li>
-        <li><a href="kursevi.php">Сви курсеви</a></li>
+        <li><a href="courses.php">Сви курсеви</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -125,7 +125,7 @@ $fetched = $stmt->fetchAll();
 <div class="col-sm-10">
 <form method="post" action="courseCode.php">
   <input type="text" name="courseCode">
-  <input type="submit" value="Submit">
+  <input type="submit" value="Пријави се">
 </form>
   <h3>Курсеви</h3><br>
   <?php 
