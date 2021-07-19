@@ -29,24 +29,29 @@ require_once "./config/PDOconfig.php" ;
 
 session_start();
 
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
   header("location: login.php");
   exit;
 }
-
-$studentIDstmt = $pdo->prepare('SELECT * FROM student WHERE email = "'.$_SESSION["email"].'"');
-$studentIDstmt->execute();
-
-$studentIDresult = $studentIDstmt->setFetchMode(PDO::FETCH_ASSOC);
-$studentIDfetched = $studentIDstmt->fetch();
-
-$_SESSION['studentID'] = $studentIDfetched["studentID"];
-
-$stmt = $pdo->prepare('SELECT * FROM pohadja WHERE studentID = "'.$_SESSION['studentID'].'"');
+$type = $_SESSION["type"];
+$email = $_SESSION["email"];
+$_SESSION['userID'] = getUserId($email,$type);
+switch($type){
+	case 'admin':
+		$stmt = $pdo->prepare('SELECT * FROM kurs');
+		break;
+	case 'student':
+		$stmt = $pdo->prepare('SELECT * FROM pohadja WHERE studentID = "'.$_SESSION['userID'].'"');
+		break;
+	case 'nastavnik':
+		$stmt = $pdo->prepare('SELECT * FROM drzi WHERE idNastavnika = "'.$_SESSION['userID'].'"');
+		break;
+}
 $stmt->execute();
 
 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $fetched = $stmt->fetchAll();
+
 
 ?>
 
@@ -67,9 +72,11 @@ $fetched = $stmt->fetchAll();
           <span class="glyphicon glyphicon-th-list"></span></button>
           <ul class="dropdown-menu">
           <?php 
-              foreach($fetched as $key => $value){
-                  echo('<li><a href="course/view.php?id='.$value["kursID"].'">'.'БРТСИ'.$value["kursID"].'</a></li>');
-              }
+			  if($_SESSION["type"] == 'student'){
+				  foreach($fetched as $key => $value){
+					  echo('<li><a href="course/view.php?id='.$value["kursID"].'">'.'БРТСИ'.$value["kursID"].'</a></li>');
+				  }
+				}
             ?>
           </ul></div>
         </li>
@@ -81,18 +88,32 @@ $fetched = $stmt->fetchAll();
           <div class="dropdown">
             <button class="btn btn-primary dropdown-toggle" type="button" data-toggle="dropdown" style="margin-top:10%; background-color: black; border:none;">
               <?php 
-              $stmtStudent = $pdo->prepare('SELECT * FROM student WHERE studentID = "'.intval($_SESSION['studentID']).'"');
-              $stmtStudent->execute();
-              
-              $result = $stmtStudent->setFetchMode(PDO::FETCH_ASSOC);
-              $student = $stmtStudent->fetch();
-              echo($student["ime"] . ' ' . $student["prezime"]);
+			  if($_SESSION["type"] == 'admin'){
+				  echo('admin');
+			  }
+			  if($_SESSION["type"] == 'nastavnik'){
+				  $stmtNastavnik = $pdo->prepare('SELECT * FROM nastavnik WHERE idNastavnika = "'.intval($_SESSION['userID']).'"');
+				  $stmtNastavnik->execute();
+				  
+				  $result = $stmtNastavnik->setFetchMode(PDO::FETCH_ASSOC);
+				  $nastavnik = $stmtNastavnik->fetch();
+				  echo($nastavnik["ime"] . ' ' . $nastavnik["prezime"]);
+			  }
+			  if($_SESSION["type"] == 'student'){
+				  $stmtStudent = $pdo->prepare('SELECT * FROM student WHERE studentID = "'.intval($_SESSION['userID']).'"');
+				  $stmtStudent->execute();
+				  
+				  $result = $stmtStudent->setFetchMode(PDO::FETCH_ASSOC);
+				  $student = $stmtStudent->fetch();
+				  echo($student["ime"] . ' ' . $student["prezime"]);
+			  }
+			  
              ?>
             <span class="caret"></span></button>
             <ul class="dropdown-menu">
               <li><form action="./config/logout.php" method="post"><button type="submit">Одјави се</button></form></li> 
               <li><a href="menjanjeSifre.php">Промена шифре</a></li>
-              <li><a href=<?php echo("user/profile.php?id=" . $_SESSION['studentID']);?>>Профил</a></li>
+              <li><a href=<?php echo("user/profile.php?id=" . $_SESSION['userID']);?>>Профил</a></li>
             </ul>
           </div>
         </li>
@@ -113,7 +134,15 @@ $fetched = $stmt->fetchAll();
       <span class="glyphicon glyphicon-user" style="background-color: white; padding: 15px; float:left;"></span>
       &nbsp;
       <?php 
-      echo($student["ime"] . ' ' . $student["prezime"]);
+	  if($_SESSION["type"] == 'student'){
+		echo($student["ime"] . ' ' . $student["prezime"]);
+	  }
+	  if($_SESSION["type"] == 'nastavnik'){
+		echo($nastavnik["ime"] . ' ' . $nastavnik["prezime"]);
+	  }
+	  if($_SESSION["type"] == 'admin'){
+		echo('admin');
+	  }
       //echo($student["ime"] + ' ' + $student["prezime"]);
       ?>
     </h1>    
@@ -131,26 +160,28 @@ $fetched = $stmt->fetchAll();
   <?php 
   echo('<div class="row">');
   $counter = 0;
+
   foreach($fetched as $key => $value){
-      $stmtPredmet = $pdo->prepare('SELECT * FROM predmet WHERE sifraPred = "'.$value["kursID"].'"');
-      $stmtPredmet->execute();
-      $result = $stmtPredmet->setFetchMode(PDO::FETCH_ASSOC);
-      $predmet = $stmtPredmet->fetch();
-      echo('
-      <div class="col-sm-3">
-      <p>'.$predmet["naziv"].'</p>
-        <a href="course/view.php?id='.$predmet["sifraPred"].'">
-        <img src="http://moodle.fink.rs/theme/image.php/fordson/theme/1601546586/noimg" class="img-responsive" style="width:100%" alt="Image">
-        </a>
-      </div>');
-      $counter++;
-      if($counter == 4){
-        echo('</div><br><div class="row">');
-        $counter = 0;
-    }
-    if($counter == 4) {echo("</div>"); $counter=0;}
+	  $stmtPredmet = $pdo->prepare('SELECT * FROM predmet JOIN kurs ON predmet.sifraPred = kurs.predmetID WHERE kursID = "'.$value["kursID"].'"');
+	  $stmtPredmet->execute();
+	  $result = $stmtPredmet->setFetchMode(PDO::FETCH_ASSOC);
+	  $predmet = $stmtPredmet->fetch();
+	  echo('
+	  <div class="col-sm-3">
+	  <p>'.$predmet["naziv"].'</p>
+		<a href="course/view.php?id='.$predmet["sifraPred"].'">
+		<img src="http://moodle.fink.rs/theme/image.php/fordson/theme/1601546586/noimg" class="img-responsive" style="width:100%" alt="Image">
+		</a>
+	  </div>');
+	  $counter++;
+	  if($counter == 4){
+		echo('</div><br><div class="row">');
+		$counter = 0;
+	}
+	if($counter == 4) {echo("</div>"); $counter=0;}
   }
   if($counter != 0) {echo("</div>");}
+  
   ?>
 </div>
 <div class="col-sm-2" style="border: 1px solid black;">
