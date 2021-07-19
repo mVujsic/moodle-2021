@@ -14,6 +14,41 @@
     session_start();
 
     require_once "./config/PDOconfig.php" ;
+	
+	// Funkcija za određivanje vrsta naloga ( radi lakšeg rada sa privilegijama )
+	function setSessionType($pdo){
+		if(!isset($_SESSION["type"])){
+			$tip = -1;
+			$email = $_SESSION["email"];
+			$sql = "SELECT tip FROM nalog WHERE email = :email";
+			if($stmt = $pdo->prepare($sql)){
+				$stmt->bindParam(':email',$email,PDO::PARAM_STR);
+				if($stmt->execute()){
+					if($stmt->rowCount() == 1){
+							if($row = $stmt->fetch()){
+								$tip = $row["tip"];
+							}
+					}
+				}
+			}
+			
+			switch ($tip){
+				case -1:
+				  echo "Greška, korisnik nije logovan";
+				  break;
+				case 0:
+				  $_SESSION["type"] = 'admin';
+				  break;
+				case 1:
+				  $_SESSION["type"] = 'nastavnik';
+				  break;
+				case 2:
+				  $_SESSION["type"] = 'student';
+				  break;
+				
+			}
+		}
+	}
     
     $username_or_passwd_err="E-mail мора бити облика xxx@xx.xx";
 
@@ -56,6 +91,7 @@
                                //Postavka Session promenljivih
                                 $_SESSION["loggedin"] = true;
                                 $_SESSION["email"] = $email;
+								setSessionType($pdo);
 
                                 if($_SESSION["email"]=="admin@mfkg.rs"){
                                     header("location: admin.html");

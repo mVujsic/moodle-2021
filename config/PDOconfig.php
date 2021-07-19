@@ -11,4 +11,33 @@ try{
 } catch(PDOException $e){
     die("GRESKA " . $e->getMessage());
 }
+
+function getUserId($email,$type){
+	if($type =='admin'){
+		return 0;
+	}
+	
+	if($type == 'student'){
+		$studentIDstmt = $pdo->prepare('SELECT * FROM student WHERE email = :email');
+		$studentIDstmt->bindParam(':email',$email,PDO::PARAM_STR);
+		$studentIDstmt->execute();
+
+		$studentIDresult = $studentIDstmt->setFetchMode(PDO::FETCH_ASSOC);
+		$studentIDfetched = $studentIDstmt->fetch();
+
+		return $studentIDfetched["studentID"];
+	}
+	if($type == 'nastavnik'){
+		$nastavnikIDstmt = $pdo->prepare('SELECT * FROM nastavnik WHERE email = :email');
+		$nastavnikIDstmt->bindParam(':email',$email,PDO::PARAM_STR);
+		$nastavnikIDstmt->execute();
+
+		$nastavnikIDresult = $nastavnikIDstmt->setFetchMode(PDO::FETCH_ASSOC);
+		$nastavnikIDfetched = $nastavnikIDstmt->fetch();
+
+		return $nastavnikIDfetched["idNastavnika"];
+	
+	}
+}
+
 ?>
