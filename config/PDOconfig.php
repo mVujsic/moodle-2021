@@ -12,13 +12,13 @@ try{
     die("GRESKA " . $e->getMessage());
 }
 
-function getUserId($email,$type){
+function getUserId($email,$type,$pdoVar){
 	if($type =='admin'){
 		return 0;
 	}
 	
 	if($type == 'student'){
-		$studentIDstmt = $pdo->prepare('SELECT * FROM student WHERE email = :email');
+		$studentIDstmt = $pdoVar->prepare('SELECT * FROM student WHERE email = :email');
 		$studentIDstmt->bindParam(':email',$email,PDO::PARAM_STR);
 		$studentIDstmt->execute();
 
@@ -28,7 +28,7 @@ function getUserId($email,$type){
 		return $studentIDfetched["studentID"];
 	}
 	if($type == 'nastavnik'){
-		$nastavnikIDstmt = $pdo->prepare('SELECT * FROM nastavnik WHERE email = :email');
+		$nastavnikIDstmt = $pdoVar->prepare('SELECT * FROM nastavnik WHERE email = :email');
 		$nastavnikIDstmt->bindParam(':email',$email,PDO::PARAM_STR);
 		$nastavnikIDstmt->execute();
 
