@@ -35,7 +35,7 @@ if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
 }
 $type = $_SESSION["type"];
 $email = $_SESSION["email"];
-$_SESSION['userID'] = getUserId($email,$type);
+$_SESSION['userID'] = getUserId($email,$type,$pdo);
 switch($type){
 	case 'admin':
 		$stmt = $pdo->prepare('SELECT * FROM kurs');
