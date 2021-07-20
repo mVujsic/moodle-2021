@@ -1,39 +1,26 @@
 <?php
+require_once "./config/PDOconfig.php" ;
+session_start();
 
-try {
-    $servername = "localhost";
-    $username = "root";
-    $password = ""; //uneti sifru
-
-    $conn = new PDO("mysql:host=$servername;dbname=moodle_db", $username, $password);
-    // set the PDO error mode to exception
-    $conn->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
-  } catch(PDOException $e) {
-    echo "Connection failed: " . $e->getMessage();
-    die();
-  }
-
-  $_GET['studentID'] = '635-2017'; //ISTO PROMENA
-
-$stmt = $conn->prepare('SELECT * FROM kurs WHERE pristupniKod = "'.$_POST["courseCode"].'"');
+$stmt = $pdo->prepare('SELECT * FROM kurs WHERE pristupniKod = "'.$_POST["courseCode"].'"');
 $stmt->execute();
 
 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $fetched = $stmt->fetch();
 
 if (!empty($fetched)){
-    $stmtCheck = $conn->prepare('SELECT * FROM pohadja WHERE kursID = "'.$fetched["kursId"].'" AND studentID = '.intval($_GET["brIndeksa"]).'');
+    $stmtCheck = $pdo->prepare('SELECT * FROM pohadja WHERE kursID = "'.$fetched["kursID"].'" AND studentID = '.$_SESSION["userID"].'');
     $stmtCheck->execute();
     $checkResult = $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $checkFetched = $stmt->fetch();
     
-    if (!empty($checkFetched)){
-        $stmt2 = $conn->prepare('INSERT INTO pohadja(`kursID`, `studentID`) VALUES ("'.$fetched["kursId"].'",'.intval($_GET["brIndeksa"]).')');
+    if (empty($checkFetched)){
+        $stmt2 = $pdo->prepare('INSERT INTO pohadja(`kursID`, `studentID`) VALUES ("'.$fetched["kursID"].'","'.$_SESSION["userID"].'")');
         $stmt2->execute();
 
     }
 
-    $courseUrl = 'course/view.php?id='.$fetched["kursId"];
+    $courseUrl = 'course/view.php?id='.$fetched["kursID"];
 
     ob_start();
     header('Location: '.$courseUrl);
