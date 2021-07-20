@@ -9,7 +9,7 @@ $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $fetched = $stmt->fetch();
 
 if (!empty($fetched)){
-    $stmtCheck = $pdo->prepare('SELECT * FROM pohadja WHERE kursID = "'.$fetched["kursID"].'" AND studentID = '.$_SESSION["userID"].'');
+    $stmtCheck = $pdo->prepare('SELECT * FROM pohadja WHERE kursID = "'.$fetched["kursID"].'" AND studentID = "'.$_SESSION["userID"].'"');
     $stmtCheck->execute();
     $checkResult = $stmt->setFetchMode(PDO::FETCH_ASSOC);
     $checkFetched = $stmt->fetch();
