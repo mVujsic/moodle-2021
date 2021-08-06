@@ -1,0 +1,2 @@
+DELETE FROM item
+  WHERE itemId = 17\npdo is set
