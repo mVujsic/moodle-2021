@@ -1,15 +1,14 @@
 -- phpMyAdmin SQL Dump
--- version 5.0.2
+-- version 4.8.5
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Nov 23, 2020 at 05:49 PM
--- Server version: 5.7.31
--- PHP Version: 7.3.21
-
-USE moodle_db;
+-- Generation Time: Aug 10, 2021 at 04:57 PM
+-- Server version: 5.7.26
+-- PHP Version: 7.2.18
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
+SET AUTOCOMMIT = 0;
 START TRANSACTION;
 SET time_zone = "+00:00";
 
@@ -52,7 +51,18 @@ CREATE TABLE IF NOT EXISTS `item` (
   `tip` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
   `lokacija` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   PRIMARY KEY (`itemId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+
+--
+-- Dumping data for table `item`
+--
+
+INSERT INTO `item` (`itemId`, `brTeme`, `redBroj`, `naziv`, `tip`, `lokacija`) VALUES
+(1, 1, 1, 'Uvod u predmet', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf'),
+(2, 1, 2, 'Pravila rada', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf'),
+(3, 2, 1, 'Prva lekcija', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf'),
+(4, 3, 1, 'Druga lekcija', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf'),
+(6, 3, 2, 'Primer', 'txt', 'iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf');
 
 -- --------------------------------------------------------
 
@@ -199,6 +209,17 @@ CREATE TABLE IF NOT EXISTS `sadrzaj` (
   KEY `itemKljuc` (`itemId`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
+--
+-- Dumping data for table `sadrzaj`
+--
+
+INSERT INTO `sadrzaj` (`kursId`, `itemId`) VALUES
+('7100', 1),
+('7100', 2),
+('7100', 3),
+('7100', 4),
+('7100', 6);
+
 -- --------------------------------------------------------
 
 --
@@ -253,13 +274,6 @@ INSERT INTO `student` (`studentID`, `ime`, `prezime`, `email`, `upisanSemestar`,
 --
 -- Constraints for dumped tables
 --
-
---
--- Constraints for table `drzi`
---
-ALTER TABLE `drzi`
-  ADD CONSTRAINT `FK kurs` FOREIGN KEY (`kursID`) REFERENCES `kurs` (`kursId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `FK nastavnik` FOREIGN KEY (`idNastavnika`) REFERENCES `nastavnik` (`idNastavnika`) ON DELETE CASCADE ON UPDATE CASCADE;
 
 --
 -- Constraints for table `nalog`
