@@ -72,7 +72,7 @@ INSERT INTO `item` (`itemId`, `brTeme`, `redBroj`, `naziv`, `tip`, `lokacija`) V
 
 DROP TABLE IF EXISTS `kurs`;
 CREATE TABLE IF NOT EXISTS `kurs` (
-  `kursId` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  `kursID` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `pristupniKod` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,
   `predmetID` varchar(4) COLLATE utf8mb4_unicode_ci NOT NULL DEFAULT '7100',
   PRIMARY KEY (`kursId`),

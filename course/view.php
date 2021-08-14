@@ -13,7 +13,21 @@
       margin-bottom: 0;
       border-radius: 0;
     }
-    
+    .popupEdit {
+      position: relative;
+      text-align: center;
+      width: 100%;
+      }
+    .formEdit {
+      display: none;
+      position: fixed;
+      left: 45%;
+      top: 5%;
+      transform: translate(-50%, 5%);
+      border: 3px solid #999999;
+      z-index: 9;
+      background: white;
+      }   
   </style>
 
   <script>
@@ -27,6 +41,13 @@ function deleteItem(id) {
       var myobj = document.getElementById(id);
       myobj.remove();
   }
+function openForm() {
+    document.getElementById("editForm").style.display = "block";
+  }
+function closeForm() {
+    document.getElementById("editForm").style.display = "none";
+  }
+
   </script>
 </head>
 <body>
@@ -36,6 +57,7 @@ function deleteItem(id) {
 require_once "../config/PDOconfig.php" ;
 
 session_start();
+header('Content-Type: text/html;charset=utf-8');
 
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
   header("location: login.php");
@@ -103,7 +125,7 @@ $fetched = $stmt->fetchAll();
           <?php 
 			  if($_SESSION["type"] == 'student'){
 				  foreach($predmeti as $key => $value){
-					  echo('<li><a href="course/view.php?id='.$value["kursID"].'">'.'БРТСИ'.$value["kursID"].'</a></li>');
+					  echo('<li><a href="view.php?id='.$value["kursID"].'">'.'БРТСИ'.$value["kursID"].'</a></li>');
 				  }
 				}
             ?>
@@ -203,9 +225,12 @@ $fetched = $stmt->fetchAll();
     echo("<hr><div class='row'><div class='col-sm-1'></div><div text-align:left class='row col-sm-11'><h2 align='left'>Tema " . $i . "</h2><div class='col-sm-1'></div><div text-align:left class='row col-sm-11'>");
     while(isset($fetched[$counter]["brTeme"]) && $fetched[$counter]["brTeme"] == $i){
 
-      echo("<h5 id=" . $fetched[$counter]["itemId"] ." align='left'><a padding-left=50px style='color:black;' href='" . $fetched[$counter]["lokacija"] . "'><img style='height:20px;' src=../pics/" . $fetched[$counter]["tip"] .".png> " . $fetched[$counter]["itemNaziv"] . "</a>" . 
+      echo("<h5 id=" . $fetched[$counter]["itemId"] ." align='left'><a padding-left=50px style='color:black;' href='" . $fetched[$counter]["lokacija"] . "'>
+      <img style='height:20px;' src=../pics/" . $fetched[$counter]["tip"] .".png> " . $fetched[$counter]["itemNaziv"] . "</a>" . 
 
-      (($_SESSION["type"] !='student')? "   <button type='button' onclick='deleteItem(" . $fetched[$counter]["itemId"] . ")'>Obrisi</button>":"") 
+      (($_SESSION["type"] =='admin' || $_SESSION["type"] =='nastavnik')? "
+         <button type='button' onclick='deleteItem(" . $fetched[$counter]["itemId"] . ")'>Obrisi</button> 
+         <button type='button' onclick='openForm()'>Izmeni</button>":"") 
       . "</h5>");
       $counter++;
 
@@ -214,6 +239,35 @@ $fetched = $stmt->fetchAll();
   }
   
   ?>
+</div>
+<div class="popupEdit">
+      <div class="formEdit" id="editForm">
+        <?php echo('
+      <form action="addItem.php?id=' . $_GET["id"] . '" method=post>
+        <label for="brTeme">Broj teme:</label><br>
+        <input type="number" id="brTeme" name="brTeme"><br>
+        <label for="redBroj">Redni broj:</label><br>
+        <input type="number" id="redBroj" name="redBroj"><br>
+        <label for="naziv">Naziv:</label><br>
+        <input type="text" id="naziv" name="naziv"><br>
+        <label for="lokacija">Lokacija:</label><br>
+        <input type="text" id="lokacija" name="lokacija"><br>
+        <label for="tip">Tip podatka:</label><br>
+        <select name="tip" id="tip">
+        <option value="pdf">pdf</option>
+        <option value="wav">wav</option>
+        <option value="doc">doc</option>
+        <option value="ppt">ppt</option>
+        <option value="avi">avi</option>
+        <option value="txt">text</option>
+        <option value="test">test</option>
+    </select>
+    <input type="submit" name="submit" value="Izmeni">
+    <button type="button" onclick="closeForm()">Izlaz</button>
+  </form>
+  ');
+  ?>
+      </div>
 </div>
 <div class="col-sm-2" style="border: 1px solid black;">
   Sidebar za testove
