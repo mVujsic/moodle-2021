@@ -61,12 +61,6 @@ $stmt->execute();
 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $predmeti = $stmt->fetchAll();
 
-/*
-$stmt = $pdo->prepare('SELECT MAX(brTeme) AS ukupanBrojTema FROM item 
-INNER JOIN sadrzaj ON item.itemId=sadrzaj.itemId 
-WHERE sadrzaj.kursId = ' . $_GET["id"]);
-*/
-
 $stmt = $pdo->prepare('SELECT COUNT(*) AS ukupanBrojTema FROM item 
 WHERE kursId = ' . $_GET["id"]);
 
