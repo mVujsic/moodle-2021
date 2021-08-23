@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1:3306
--- Generation Time: Aug 10, 2021 at 04:57 PM
+-- Generation Time: Aug 14, 2021 at 04:27 PM
 -- Server version: 5.7.26
 -- PHP Version: 7.2.18
 
@@ -50,19 +50,22 @@ CREATE TABLE IF NOT EXISTS `item` (
   `naziv` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `tip` varchar(5) COLLATE utf8mb4_unicode_ci NOT NULL,
   `lokacija` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  PRIMARY KEY (`itemId`)
-) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
+  `kursId` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
+  PRIMARY KEY (`itemId`),
+  KEY `FK item kurs` (`kursId`)
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
 
 --
 -- Dumping data for table `item`
 --
 
-INSERT INTO `item` (`itemId`, `brTeme`, `redBroj`, `naziv`, `tip`, `lokacija`) VALUES
-(1, 1, 1, 'Uvod u predmet', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf'),
-(2, 1, 2, 'Pravila rada', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf'),
-(3, 2, 1, 'Prva lekcija', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf'),
-(4, 3, 1, 'Druga lekcija', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf'),
-(6, 3, 2, 'Primer', 'txt', 'iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf');
+INSERT INTO `item` (`itemId`, `brTeme`, `redBroj`, `naziv`, `tip`, `lokacija`, `kursId`) VALUES
+(1, 1, 1, 'Uvod u predmet', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf', '7100'),
+(2, 1, 2, 'Pravila rada', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf', '7100'),
+(3, 2, 1, 'Prva lekcija', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf', '7100'),
+(6, 3, 2, 'Primer', 'txt', 'iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf', '7100'),
+(7, 3, 3, 'Nesto trece', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf', '7100'),
+(8, 3, 1, 'Druga lekcija', 'pdf', 'https://iopscience.iop.org/article/10.1088/1755-1315/69/1/012073/pdf', '7100');
 
 -- --------------------------------------------------------
 
@@ -198,31 +201,6 @@ INSERT INTO `predmet` (`sifraPred`, `naziv`, `espb`, `brSemestra`, `smerID`) VAL
 -- --------------------------------------------------------
 
 --
--- Table structure for table `sadrzaj`
---
-
-DROP TABLE IF EXISTS `sadrzaj`;
-CREATE TABLE IF NOT EXISTS `sadrzaj` (
-  `kursId` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
-  `itemId` int(11) NOT NULL,
-  KEY `kursKljuc` (`kursId`),
-  KEY `itemKljuc` (`itemId`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_unicode_ci;
-
---
--- Dumping data for table `sadrzaj`
---
-
-INSERT INTO `sadrzaj` (`kursId`, `itemId`) VALUES
-('7100', 1),
-('7100', 2),
-('7100', 3),
-('7100', 4),
-('7100', 6);
-
--- --------------------------------------------------------
-
---
 -- Table structure for table `smer`
 --
 
@@ -276,17 +254,16 @@ INSERT INTO `student` (`studentID`, `ime`, `prezime`, `email`, `upisanSemestar`,
 --
 
 --
+-- Constraints for table `item`
+--
+ALTER TABLE `item`
+  ADD CONSTRAINT `FK item kurs` FOREIGN KEY (`kursId`) REFERENCES `kurs` (`kursId`) ON DELETE CASCADE ON UPDATE CASCADE;
+
+--
 -- Constraints for table `nalog`
 --
 ALTER TABLE `nalog`
   ADD CONSTRAINT `emailConstraintStudent` FOREIGN KEY (`email`) REFERENCES `student` (`email`) ON DELETE CASCADE ON UPDATE CASCADE;
-
---
--- Constraints for table `sadrzaj`
---
-ALTER TABLE `sadrzaj`
-  ADD CONSTRAINT `itemKljuc` FOREIGN KEY (`itemId`) REFERENCES `item` (`itemId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  ADD CONSTRAINT `kursKljuc` FOREIGN KEY (`kursId`) REFERENCES `kurs` (`kursId`) ON DELETE CASCADE ON UPDATE CASCADE;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

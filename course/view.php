@@ -60,7 +60,7 @@ session_start();
 header('Content-Type: text/html;charset=utf-8');
 
 if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
-  header("location: login.php");
+  header("location: ../login.php");
   exit;
 }
 $type = $_SESSION["type"];
@@ -83,9 +83,8 @@ $stmt->execute();
 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $predmeti = $stmt->fetchAll();
 
-$stmt = $pdo->prepare('SELECT MAX(brTeme) AS ukupanBrojTema FROM item 
-INNER JOIN sadrzaj ON item.itemId=sadrzaj.itemId 
-WHERE sadrzaj.kursId = ' . $_GET["id"]);
+$stmt = $pdo->prepare('SELECT COUNT(*) AS ukupanBrojTema FROM item 
+WHERE kursId = ' . $_GET["id"]);
 
 $stmt->execute();
 
@@ -93,10 +92,9 @@ $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $fetched = $stmt->fetch();
 $ukupanBrojTema = $fetched["ukupanBrojTema"];
 
-$stmt = $pdo->prepare('SELECT item.itemId, brTeme, redBroj, tip, lokacija, kursId, predmet.naziv, item.naziv AS itemNaziv FROM item 
-INNER JOIN sadrzaj ON item.itemId=sadrzaj.itemId 
-INNER JOIN predmet ON predmet.sifraPred=sadrzaj.kursId 
-WHERE sadrzaj.kursId = ' . $_GET["id"] . ' ORDER BY item.brTeme ASC, item.redBroj ASC');
+$stmt = $pdo->prepare('SELECT itemId, brTeme, redBroj, tip, lokacija, kursId, predmet.naziv, item.naziv AS itemNaziv FROM item 
+INNER JOIN predmet ON predmet.sifraPred=item.kursId 
+WHERE item.kursId = ' . $_GET["id"] . ' ORDER BY item.brTeme ASC, item.redBroj ASC');
 
 $stmt->execute();
 
