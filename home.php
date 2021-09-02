@@ -80,8 +80,7 @@ $fetched = $stmt->fetchAll();
             ?>
           </ul></div>
         </li>
-        <li class="active"><a href="#">Контролни панел</a></li>
-        <li><a href="courses.php">Сви курсеви</a></li>
+        <li class="active"><a href="home.php">Контролни панел</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -100,7 +99,7 @@ $fetched = $stmt->fetchAll();
 				  echo($nastavnik["ime"] . ' ' . $nastavnik["prezime"]);
 			  }
 			  if($_SESSION["type"] == 'student'){
-				  $stmtStudent = $pdo->prepare('SELECT * FROM student WHERE studentID = "'.intval($_SESSION['userID']).'"');
+				  $stmtStudent = $pdo->prepare('SELECT * FROM student WHERE studentID = "'.$_SESSION['userID'].'"');
 				  $stmtStudent->execute();
 				  
 				  $result = $stmtStudent->setFetchMode(PDO::FETCH_ASSOC);
@@ -111,9 +110,7 @@ $fetched = $stmt->fetchAll();
              ?>
             <span class="caret"></span></button>
             <ul class="dropdown-menu">
-              <li><form action="./config/logout.php" method="post"><button type="submit">Одјави се</button></form></li> 
-              <li><a href="menjanjeSifre.php">Промена шифре</a></li>
-              <li><a href=<?php echo("user/profile.php?id=" . $_SESSION['userID']);?>>Профил</a></li>
+              <li><form action="./config/logout.php" method="post"><button type="submit">Одјави се</button></form></li>
             </ul>
           </div>
         </li>

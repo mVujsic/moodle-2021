@@ -9,18 +9,17 @@ $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $fetched = $stmt->fetch();
 
 if (!empty($fetched)){
-    $stmtCheck = $pdo->prepare('SELECT * FROM pohadja WHERE kursID = "'.$fetched["kursID"].'" AND studentID = "'.$_SESSION["userID"].'"');
+    $stmtCheck = $pdo->prepare('SELECT * FROM pohadja WHERE kursId = "'.$fetched["kursId"].'" AND studentID = "'.$_SESSION["userID"].'"');
     $stmtCheck->execute();
-    $checkResult = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-    $checkFetched = $stmt->fetch();
+    $checkResult = $stmtCheck->setFetchMode(PDO::FETCH_ASSOC);
+    $checkFetched = $stmtCheck->fetch();
     
     if (empty($checkFetched)){
-        $stmt2 = $pdo->prepare('INSERT INTO pohadja(`kursID`, `studentID`) VALUES ("'.$fetched["kursID"].'","'.$_SESSION["userID"].'")');
+        $stmt2 = $pdo->prepare('INSERT INTO pohadja(`kursId`, `studentID`) VALUES ("'.$fetched["kursId"].'","'.$_SESSION["userID"].'")');
         $stmt2->execute();
-
     }
 
-    $courseUrl = 'course/view.php?id='.$fetched["kursID"];
+    $courseUrl = 'course/view.php?id='.$fetched["kursId"];
 
     ob_start();
     header('Location: '.$courseUrl);

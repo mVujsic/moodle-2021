@@ -37,10 +37,22 @@ require_once "../config/PDOconfig.php" ;
 
 session_start();
 
-if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true ){
+if(!isset($_SESSION["loggedin"]) || $_SESSION["loggedin"] !== true){
   header("location: ../login.php");
   exit;
 }
+
+if($_SESSION["type"] == 'student'){
+  $stmtCheck = $pdo->prepare('SELECT * FROM pohadja WHERE kursId = "'.$_GET["id"].'" AND studentID = "'.$_SESSION["userID"].'"');
+  $stmtCheck->execute();
+  $checkResult = $stmtCheck->setFetchMode(PDO::FETCH_ASSOC);
+  $checkFetched = $stmtCheck->fetch();
+
+  if (empty($checkFetched)){
+      header("location: ../home.php");
+  }
+}
+
 $type = $_SESSION["type"];
 $email = $_SESSION["email"];
 $_SESSION['userID'] = getUserId($email,$type,$pdo);
@@ -61,14 +73,7 @@ $stmt->execute();
 $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
 $predmeti = $stmt->fetchAll();
 
-$stmt = $pdo->prepare('SELECT COUNT(*) AS ukupanBrojTema FROM item 
-WHERE kursId = ' . $_GET["id"]);
-
-$stmt->execute();
-
-$result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-$fetched = $stmt->fetch();
-$ukupanBrojTema = $fetched["ukupanBrojTema"];
+$ukupanBrojTema = 15;
 
 $stmt = $pdo->prepare('SELECT itemId, brTeme, redBroj, tip, lokacija, kursId, predmet.naziv, item.naziv AS itemNaziv FROM item 
 INNER JOIN predmet ON predmet.sifraPred=item.kursId 
@@ -99,16 +104,28 @@ $fetched = $stmt->fetchAll();
           <span class="glyphicon glyphicon-th-list"></span></button>
           <ul class="dropdown-menu">
           <?php 
-			  if($_SESSION["type"] == 'student'){
+			  
 				  foreach($predmeti as $key => $value){
-					  echo('<li><a href="course/view.php?id='.$value["kursID"].'">'.'БРТСИ'.$value["kursID"].'</a></li>');
+					  echo('<li><a href="view.php?id='.($_SESSION["type"] == 'admin'? $value["kursId"]:$value["kursID"]).'">'.'БРТСИ'.($_SESSION["type"] == 'admin'? $value["kursId"]:$value["kursID"]).'</a></li>');
 				  }
-				}
+				
             ?>
           </ul></div>
         </li>
-        <li class="active"><a href="#">Контролни панел</a></li>
-        <li><a href="courses.php">Сви курсеви</a></li>
+        <li class="active"><a href=<?php
+        switch($type){
+          case 'admin':
+            $adress = '../admin.php';
+            break;
+          case 'student':
+            $adress = '../home.php';
+            break;
+          case 'nastavnik':
+            $adress = '../teacher.php';
+            break;
+        }
+        echo('"' . $adress . '"');
+         ?>>Контролни панел</a></li>
       </ul>
       <ul class="nav navbar-nav navbar-right">
         <li>
@@ -139,8 +156,6 @@ $fetched = $stmt->fetchAll();
             <span class="caret"></span></button>
             <ul class="dropdown-menu">
               <li><form action="../config/logout.php" method="post"><button type="submit">Одјави се</button></form></li> 
-              <li><a href="menjanjeSifre.php">Промена шифре</a></li>
-              <li><a href=<?php echo("user/profile.php?id=" . $_SESSION['userID']);?>>Профил</a></li>
             </ul>
           </div>
         </li>
@@ -169,7 +184,19 @@ $fetched = $stmt->fetchAll();
 
 <br>
 <?php 
-  if ($_SESSION["type"] !='student') echo('
+
+  if ($_SESSION["type"] =='nastavnik') {
+    $stmt = $pdo->prepare('SELECT * FROM drzi WHERE idNastavnika = ' . $_SESSION["userID"] . ' AND kursId = ' . $_GET["id"]);
+        
+    $stmt->execute();
+
+    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+  }
+
+  if ($_SESSION["type"] =='admin' || $stmt->fetch()){
+    echo('
+    <div class="row">
+    <div class="col-sm-6">
   <h6 align="left">
   <form action="addItem.php?id=' . $_GET["id"] . '" method=post>
     <label for="brTeme">Broj teme:</label><br>
@@ -192,8 +219,64 @@ $fetched = $stmt->fetchAll();
     </select>
     <input type="submit" name="submit" value="Unesi stavku">
   </form>
-  </h6>
+  </h6></div>
   ');
+
+    if ($_SESSION["type"] =='admin'){
+      echo('
+      <div class="col-sm-6">
+      <h6 align="right">
+      <form action="addTeacher.php?id=' . $_GET["id"] . '" method=post>
+        <label for="tip">Dodaj nastavnika:</label>
+        <select name="dodaj" id="dodaj">');
+        $stmt = $pdo->prepare('SELECT ime, prezime, idNastavnika FROM nastavnik WHERE nastavnik.idNastavnika NOT IN (SELECT nastavnik.idNastavnika FROM nastavnik INNER JOIN drzi ON nastavnik.idNastavnika = drzi.idNastavnika WHERE kursId = ' . $_GET["id"] . ')');
+        
+        $stmt->execute();
+
+        $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+        while($ime_prezime = $stmt->fetch()){
+          $ime = $ime_prezime["ime"];
+          $prezime = $ime_prezime["prezime"];
+          $id = $ime_prezime["idNastavnika"];
+          echo('<option value=' . $id . '>' . $ime . ' ' . $prezime . '</option>');
+          
+        }
+        echo('</select>
+        <input type="submit" name="submit" value="Dodaj">
+      </form>
+      </h6></div>
+      ');
+
+      echo('
+      <div class="col-sm-6">
+      <h6 align="right">
+      <form action="removeTeacher.php?id=' . $_GET["id"] . '" method=post>
+        <label for="tip">Ukloni nastavnika:</label>
+        <select name="ukloni" id="ukloni">');
+        $stmt = $pdo->prepare('SELECT ime, prezime, nastavnik.idNastavnika FROM nastavnik INNER JOIN drzi ON nastavnik.idNastavnika = drzi.idNastavnika WHERE kursId = ' . $_GET["id"]);
+
+        $stmt->execute();
+
+        $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+
+        while($ime_prezime = $stmt->fetch()){
+          $ime = $ime_prezime["ime"];
+          $prezime = $ime_prezime["prezime"];
+          $id = $ime_prezime["idNastavnika"];
+          echo('<option value=' . $id . '>' . $ime . ' ' . $prezime . '</option>');
+          
+        }
+        echo('</select>
+        <input type="submit" name="submit" value="Ukloni">
+      </form>
+      </h6></div>
+      ');
+
+      }
+
+    echo('</div>');
+    } 
 
   $counter = 0;
 
