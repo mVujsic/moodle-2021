@@ -1,2 +1,2 @@
 DELETE FROM item
-  WHERE itemId = 5\npdo is set
+  WHERE itemId = 7\npdo is set

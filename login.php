@@ -56,7 +56,14 @@
     $isProf=false;
     
     if(isset($_SESSION["loggedin"]) && $_SESSION["loggedin"] === true){
-        header("location: home.php");
+        setSessionType($pdo);
+
+        if($_SESSION["type"] == 'admin'){
+            header("location: admin.php");
+        }else if($_SESSION["type"] == 'nastavnik'){
+            header("location: teacher.php");
+        }else 
+            header("location: home.php");
         exit;
     }
      
@@ -93,10 +100,12 @@
                                 $_SESSION["email"] = $email;
 								setSessionType($pdo);
 
-                                if($_SESSION["email"]=="admin@mfkg.rs"){
-                                    header("location: admin.html");
-                                }else
-                                      header("location: home.php");
+                                if($_SESSION["type"] == 'admin'){
+                                    header("location: admin.php");
+                                }else if($_SESSION["type"] == 'nastavnik'){
+                                    header("location: teacher.php");
+                                }else 
+                                    header("location: home.php");
                             } else{
                                
                                 $username_or_passwd_err  = "Погрешна шифра.";
