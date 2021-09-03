@@ -241,7 +241,7 @@ $fetched = $stmt->fetchAll();
 <div class="popupEdit">
       <div class="formEdit" id="editForm">
         <?php echo('
-      <form action="addItem.php?id=' . $_GET["id"] . '" method=post>
+      <form action="editItem.php?id=' . $_GET["id"] . '" method=post>
         <label for="brTeme">Broj teme:</label><br>
         <input type="number" id="brTeme" name="brTeme"><br>
         <label for="redBroj">Redni broj:</label><br>
@@ -260,7 +260,7 @@ $fetched = $stmt->fetchAll();
         <option value="txt">text</option>
         <option value="test">test</option>
     </select>
-    <input type="submit" name="submit" value="Izmeni">
+    <input type="submit" name="edit" value="Izmeni">
     <button type="button" onclick="closeForm()">Izlaz</button>
   </form>
   ');

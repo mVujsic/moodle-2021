@@ -42,7 +42,6 @@ CREATE TABLE IF NOT EXISTS `drzi` (
 -- Table structure for table `item`
 --
 
-DROP TABLE IF EXISTS `item`;
 CREATE TABLE IF NOT EXISTS `item` (
   `itemId` int(11) NOT NULL AUTO_INCREMENT,
   `brTeme` int(11) NOT NULL,
@@ -73,7 +72,6 @@ INSERT INTO `item` (`itemId`, `brTeme`, `redBroj`, `naziv`, `tip`, `lokacija`, `
 -- Table structure for table `kurs`
 --
 
-DROP TABLE IF EXISTS `kurs`;
 CREATE TABLE IF NOT EXISTS `kurs` (
   `kursID` varchar(255) COLLATE utf8mb4_unicode_ci NOT NULL,
   `pristupniKod` varchar(6) COLLATE utf8mb4_unicode_ci NOT NULL,

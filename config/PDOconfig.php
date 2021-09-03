@@ -3,7 +3,7 @@
 define('DB_SERVER', 'localhost');
 define('DB_USERNAME', 'root');
 define('DB_PASSWORD', ''); // Ovde staviti vasu sifru
-define('DB_NAME', 'moodle_db2');
+define('DB_NAME', 'moodle_db');
  
 /* Konekcija ka bazi */
 try{
