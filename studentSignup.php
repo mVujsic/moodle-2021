@@ -62,6 +62,7 @@
                 if(!$stmt->execute()){
                     echo $stmt->debugDumpParams();
                 }
+
             }
         }
             
@@ -88,7 +89,7 @@
         <br>
         <div class="row justify-content-center">
             <div class="col-12 col-sm-8 col-md-4">
-                <form class="form-container" method="POST" action="">
+                <form class="form-container" method="POST" action="studentSignup.php">
                     <div class="form-group">
                         <label for="" style="font-size: 25px;">Регистрациона форма</label><br><br>
                         <label for="exampleInputStudentID1"><b>Број индекса:</b></label>
