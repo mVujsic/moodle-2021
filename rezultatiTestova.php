@@ -15,7 +15,7 @@
 
     require_once "./config/PDOconfig.php" ;
 
-    if(!isset($_SESSION["type"]) || $_SESSION["type"] == 'student'){
+    if(!isset($_SESSION["type"]) || $_SESSION["type"] == 'nastavnik'$_SESSION["type"] == 'admin'){
         header("location: login.php");
         exit;
     }

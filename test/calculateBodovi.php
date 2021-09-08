@@ -80,5 +80,5 @@ if($stmt = $pdo->prepare($sql)){
     $stmt->execute();
 }
 }
- //header("Refresh:0; url=test.php?id=" . $_GET["id"]);
+ header("Refresh:0; url=test.php?id=" . $_GET["id"]);
 ?> 

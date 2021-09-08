@@ -224,6 +224,7 @@ $fetched = $stmt->fetchAll();
   }
 
   if ($_SESSION["type"] =='admin' || $stmt->fetch()){
+    echo('</div>');
     echo('
     <div class="row">
     <div class="col-sm-6">
@@ -304,7 +305,7 @@ $fetched = $stmt->fetchAll();
 
       }
 
-    echo('</div>');
+  
     } 
     if ($_SESSION["type"] =='admin' || $_SESSION["type"] == 'nastavnik'){
       echo('
@@ -318,10 +319,36 @@ $fetched = $stmt->fetchAll();
       </form>
       </h6></div>
       ');
+
     }
-
-  $counter = 0;
-
+    ?>
+    <div class="row">
+    <div class="col-sm-2" style="border: 1px solid black;">
+    <?php
+      $sql = "SELECT testId,naziv FROM test WHERE kursID = :kursID";
+      if($stmt = $pdo->prepare($sql)){  
+        $stmt->bindParam(":kursID", $param_kurs, PDO::PARAM_STR);
+    
+        $param_kurs = trim($_GET["id"]);
+        $stmt->execute();
+    
+        $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+    
+        while($res = $stmt->fetch()){
+          $naziv = $res["naziv"];
+          $testId = $res["testId"];
+          echo('<a href="../test/test.php?id='.$testId.'">'. $naziv .'</a><br>');
+          
+        }
+      }
+    ?>
+    </div>
+    </div>
+    <?php
+    
+    $counter = 0;
+    if($_SESSION["type"] !='student')
+      echo('</div>');
 	for($i=1;$i<=$ukupanBrojTema;$i++){
     echo("<hr><div class='row'><div class='col-sm-1'></div><div text-align:left class='row col-sm-11'><h2 align='left'>Tema " . $i . "</h2><div class='col-sm-1'></div><div text-align:left class='row col-sm-11'>");
     while(isset($fetched[$counter]["brTeme"]) && $fetched[$counter]["brTeme"] == $i){
@@ -370,26 +397,7 @@ $fetched = $stmt->fetchAll();
   ?>
       </div>
 </div>
-<div class="col-sm-2" style="border: 1px solid black;">
-<?php
-  $sql = "SELECT testId,naziv FROM test WHERE kursID = :kursID";
-  if($stmt = $pdo->prepare($sql)){  
-    $stmt->bindParam(":kursID", $param_kurs, PDO::PARAM_STR);
 
-    $param_kurs = trim($_GET["id"]);
-    $stmt->execute();
-
-    $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
-
-    while($res = $stmt->fetch()){
-      $naziv = $res["naziv"];
-      $testId = $res["testId"];
-      echo('<option value=' . $testId . '> <a href="../test/test.php?id='.$testId.'">'. $naziv .'</option></a><br>');
-      
-    }
-  }
-?>
-</div>
 
 </div>
 </div><br><br>
