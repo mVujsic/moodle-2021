@@ -23,7 +23,20 @@
     $search_term = isset($_GET["searchterm"])? $_GET["searchterm"]:"";
     $pagesize = 10;
     $pagenum = isset($_GET["page"])? $_GET["page"]:1;
-    $sql = "SELECT * FROM polaze INNER JOIN student ON polaze.studentID = student.studentID WHERE polaze.studentID LIKE :searchterm OR CONVERT(polaze.testId, CHAR) LIKE :searchterm";
+    
+    $sql = 'SELECT s.studentID, s.ime, s.prezime,t.naziv as tnaziv, p.bodovi,c.naziv from polaze p inner join 
+    student s inner join 
+    test t inner join 
+    kurs k inner join 
+    predmet c 
+    on p.studentID=s.studentID and t.testId= p.testId and k.kursId=t.kursId and k.predmetID=c.sifraPred ';
+   
+   // WHERE p.studentID LIKE :searchterm OR CONVERT(p.testId, CHAR) LIKE :searchterm;
+    
+    if($search_term != ""){
+        $sql .= "WHERE p.studentID LIKE :searchterm OR CONVERT(p.testId, CHAR) LIKE :searchterm";
+    }
+  //  echo($sql);
     if($stmt = $pdo->prepare($sql)){
         $stmt->bindParam(":searchterm", $param_searchterm, PDO::PARAM_STR);
         $param_searchterm = "%" . $search_term . "%";
@@ -47,7 +60,7 @@
         </div>
         <br>
         <div class="row justify-content-center">
-            <div class="col-10 col-sm-10 col-md-10">
+            <div class="col-12 col-sm-12 col-md-12">
                 <form class="form-container" method="GET" action="rezultatiTestova.php">
                     <div class="form-group">
                         <input type="text" name='searchterm' class="form-control" id="searchterm" 
@@ -61,9 +74,11 @@
                     <div class="container-fluid">
 
                         <div class="row" style=" border-bottom:1px solid black;">
-                            <div class="col-4 col-sm-4 col-md-4"><b>Индекс студента</b></div>
-                            <div class="col-4 col-sm-4 col-md-4"><b>Шифра теста</b></div>
-                            <div class="col-4 col-sm-4 col-md-4"><b>Бодови</b></div>
+                            <div class="col-2 col-sm-2 col-md-2"><b>Индекс студента</b></div>
+                            <div class="col-3 col-sm-3 col-md-3"><b>Име и презиме</b></div>
+                            <div class="col-3 col-sm-3 col-md-3"><b>Предмет</b></div>
+                            <div class="col-2 col-sm-2 col-md-2"><b>Назив теста</b></div>
+                            <div class="col-1 col-sm-1 col-md-1"><b>Бодови</b></div>
                         
                         </div>
 
@@ -72,13 +87,18 @@
                         if($stmt->execute()){
                             while($row = $stmt->fetch()){
                                 echo("<div class='row' style='border-bottom:1px solid black;'>");
-                                echo("<div class='col-4 col-sm-4 col-md-4'>");
+                                echo("<div class='col-2 col-sm-2 col-md-2'>");
                                 echo("<span>" . $row["studentID"] . "</span>");
                                 echo("</div>");
-                                echo("<div class='col-4 col-sm-4 col-md-4'>");
-                                echo("<span>" . $row["testId"] . "</span>");
+                                echo("<div class='col-3 col-sm-3 col-md-3'>");
+                                echo("<span>" . $row["ime"] . " " . $row["prezime"] . "</span>");
                                 echo("</div>");
-                                echo("<div class='col-4 col-sm-4 col-md-4'>");
+                                echo("<div class='col-3 col-sm-3 col-md-3'>");
+                                echo("<span>" . $row["naziv"] . "</span>");
+                                echo("</div>");
+                                echo("<div class='col-2 col-sm-2 col-md-2'>");
+                                echo("<span>" . $row["tnaziv"] . "</span>");echo("</div>");
+                                echo("<div class='col-1 col-sm-1 col-md-1'>");
                                 echo("<span>" . $row["bodovi"] . "</span>");echo("</div>");
                                 echo("</div>");
                             }

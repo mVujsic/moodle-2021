@@ -110,6 +110,10 @@
                         <a href="courseSearch.php" class="btn btn-primary btn-lg active link1 btn-block"
                             role="button" aria-pressed="true">Претрага курсева</a>
                     </div>
+                    <div class="container-fluid">
+                        <a href="./rezultatiTestova.php" class="btn btn-primary btn-lg active link1 btn-block"
+                            role="button" aria-pressed="true">Резултати тестова</a>
+                    </div>
             </div>
         </div>
 
