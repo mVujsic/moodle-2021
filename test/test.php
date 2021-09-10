@@ -180,13 +180,9 @@ $fetched = $stmt->fetchAll();
       $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
       $fetched = $stmt->fetch();
 
-      if($stmt->fetchColumn()+1 <= 0)
-        return -1;
-      else
       return $fetched["bodovi"];
     }
   }
-
 
   function getBrojPitanja($id){
     global $pdo;
@@ -225,8 +221,9 @@ $fetched = $stmt->fetchAll();
   }
   if($_SESSION["type"] == 'student'){
     $brBodova = getStudentBodovi($_SESSION['userID'],trim($_GET['id']));
-    if($brBodova>=0)
+    if(is_numeric($brBodova))
       echo("Osvojeno je: ".$brBodova);
+
   }
   $nextPitanje = getBrojPitanja($_GET['id']) + 1;
   if ($_SESSION["type"] =='admin' || $_SESSION["type"] =='nastavnik'){
@@ -300,7 +297,7 @@ $fetched = $stmt->fetchAll();
       }
       
     }
-    if($_SESSION["type"] == 'student'){
+    if($_SESSION["type"] == 'student' && !is_numeric($brBodova)){
     echo('<input type="submit" name="submit" value="Predaj test">
           </form>');
     }
