@@ -105,7 +105,7 @@ $predmeti = $stmt->fetchAll();
 
 $ukupanBrojTema = 15;
 
-$stmt = $pdo->prepare('SELECT itemId, brTeme, redBroj, tip, lokacija, kursId, predmet.naziv, item.naziv AS itemNaziv FROM item 
+$stmt = $pdo->prepare('SELECT itemId, brTeme, redBroj, tip, lokacija, kursId, predmet.naziv, item.naziv AS itemNaziv,item.opis FROM item 
 INNER JOIN predmet ON predmet.sifraPred=item.kursId 
 WHERE item.kursId = ' . $_GET["id"] . ' ORDER BY item.brTeme ASC, item.redBroj ASC');
 
@@ -167,7 +167,7 @@ $fetched = $stmt->fetchAll();
 			  }
 			  if($_SESSION["type"] == 'nastavnik'){
 				  $stmtNastavnik = $pdo->prepare('SELECT * FROM nastavnik WHERE idNastavnika = "'.intval($_SESSION['userID']).'"');
-				  $stmtNastavnik->execute();
+				  $stmtNastavnik->execute(); 
 				  
 				  $result = $stmtNastavnik->setFetchMode(PDO::FETCH_ASSOC);
 				  $nastavnik = $stmtNastavnik->fetch();
@@ -238,6 +238,8 @@ $fetched = $stmt->fetchAll();
     <input type="text" id="naziv" name="naziv"><br>
     <label for="lokacija">Lokacija:</label><br>
     <input type="text" id="lokacija" name="lokacija"><br>
+    <label for="Kratak opis">Opis:</label><br>
+    <input type="text" id="opis" name="opis"><br>
     <label for="tip">Tip podatka:</label><br>
     <select name="tip" id="tip">
       <option value="pdf">pdf</option>
@@ -355,11 +357,10 @@ $fetched = $stmt->fetchAll();
 
       echo("<h5 id=" . $fetched[$counter]["itemId"] ." align='left'><a padding-left=50px style='color:black;' href='" . $fetched[$counter]["lokacija"] . "'>
       <img style='height:20px;' src=../pics/" . $fetched[$counter]["tip"] .".png> " . $fetched[$counter]["itemNaziv"] . "</a>" . 
-
-      (($_SESSION["type"] =='admin' || $_SESSION["type"] =='nastavnik')? "
-         <button type='button' onclick='deleteItem(" . $fetched[$counter]["itemId"] . ")'>Obrisi</button> 
-         <button type='button' onclick='openForm()'>Izmeni</button>":"") 
-      . "</h5>");
+      "<h6>". $fetched[$counter]["opis"] ."</h6>");
+      if($_SESSION["type"] =='admin' || $_SESSION["type"] =='nastavnik')       
+      echo("<button type='button' onclick='deleteItem(". $fetched[$counter]["itemId"] .")'>Obrisi</button> 
+         <button type='button' onclick='openForm()'>Izmeni</button></h5>");
       $counter++;
 
     }
