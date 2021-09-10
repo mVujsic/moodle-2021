@@ -74,7 +74,7 @@ $fetched = $stmt->fetchAll();
           <?php 
 			  if($_SESSION["type"] == 'student'){
 				  foreach($fetched as $key => $value){
-					  echo('<li><a href="course/view.php?id='.$value["kursID"].'">'.'БРТСИ'.$value["kursID"].'</a></li>');
+					  echo('<li><a href="course/view.php?id='.$value["kursId"].'">'.'БРТСИ'.$value["kursId"].'</a></li>');
 				  }
 				}
             ?>
@@ -159,7 +159,7 @@ $fetched = $stmt->fetchAll();
   $counter = 0;
 
   foreach($fetched as $key => $value){
-	  $stmtPredmet = $pdo->prepare('SELECT * FROM predmet JOIN kurs ON predmet.sifraPred = kurs.predmetID WHERE kursID = "'.$value["kursID"].'"');
+	  $stmtPredmet = $pdo->prepare('SELECT * FROM predmet JOIN kurs ON predmet.sifraPred = kurs.predmetID WHERE kursId = "'.$value["kursID"].'"');
 	  $stmtPredmet->execute();
 	  $result = $stmtPredmet->setFetchMode(PDO::FETCH_ASSOC);
 	  $predmet = $stmtPredmet->fetch();

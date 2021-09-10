@@ -164,6 +164,30 @@ $fetched = $stmt->fetchAll();
 
   <h1 align="left">
 <?php
+  function getStudentBodovi($studentId,$testId){
+    global $pdo;
+    $sql = 'SELECT bodovi FROM polaze WHERE studentID = :studentID AND testId = :testId';
+    if($stmt = $pdo->prepare($sql)){
+
+      $stmt->bindParam(":studentID",$param_studentId,PDO::PARAM_STR);
+      $stmt->bindParam(":testId",$param_testId,PDO::PARAM_INT);
+
+      $param_studentId = $studentId;
+      $param_testId = $testId;
+
+      $stmt->execute();
+
+      $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
+      $fetched = $stmt->fetch();
+
+      if($stmt->fetchColumn()+1 <= 0)
+        return -1;
+      else
+      return $fetched["bodovi"];
+    }
+  }
+
+
   function getBrojPitanja($id){
     global $pdo;
     $sql = "SELECT COUNT(pitanjeId) FROM pitanja WHERE testId = :testId";
@@ -181,14 +205,16 @@ $fetched = $stmt->fetchAll();
     }
   }
 
-  function getBrojOdgovora($id){
+  function getBrojOdgovora($pitanjeId,$testId){
     global $pdo;
-    $sql = "SELECT COUNT(odgovorId) FROM odgovori WHERE pitanjeId = :pitanjeId";
+    $sql = "SELECT COUNT(odgovorId) FROM odgovori WHERE pitanjeId = :pitanjeId AND testId = :testId";
     if($stmt = $pdo->prepare($sql)){
 
         $stmt->bindParam(":pitanjeId", $param_pitanje, PDO::PARAM_INT);
+        $stmt->bindParam(":testId", $param_test, PDO::PARAM_INT);
 
-        $param_pitanje = $id;
+        $param_pitanje = $pitanjeId;
+        $param_test = $testId;
         $stmt->execute();
 
         $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -197,7 +223,11 @@ $fetched = $stmt->fetchAll();
         return $fetched;
     }
   }
-
+  if($_SESSION["type"] == 'student'){
+    $brBodova = getStudentBodovi($_SESSION['userID'],trim($_GET['id']));
+    if($brBodova>=0)
+      echo("Osvojeno je: ".$brBodova);
+  }
   $nextPitanje = getBrojPitanja($_GET['id']) + 1;
   if ($_SESSION["type"] =='admin' || $_SESSION["type"] =='nastavnik'){
     echo('
@@ -217,9 +247,9 @@ $fetched = $stmt->fetchAll();
   }
   $sql = "SELECT * FROM pitanja WHERE testId = :testId";
   if($stmt = $pdo->prepare($sql)){  
-    $stmt->bindParam(":testId", $param_kurs, PDO::PARAM_INT);
+    $stmt->bindParam(":testId", $param_test, PDO::PARAM_INT);
 
-    $param_kurs = trim($_GET["id"]);
+    $param_test = trim($_GET["id"]);
     $stmt->execute();
 
     $result = $stmt->setFetchMode(PDO::FETCH_ASSOC);
@@ -230,7 +260,7 @@ $fetched = $stmt->fetchAll();
     while($res = $stmt->fetch()){
       $pitanje = $res["pitanje"];
       $pitanjeId = $res["pitanjeId"];
-      $nextOdgovor = getBrojOdgovora($pitanjeId) + 1;
+      $nextOdgovor = getBrojOdgovora($pitanjeId,$param_test) + 1;
       echo('<div class="row"><div class="col-sm-6"><pre>'.$pitanje.'</pre>');
       if ($_SESSION["type"] =='admin' || $_SESSION["type"] =='nastavnik'){
         echo('
@@ -249,11 +279,13 @@ $fetched = $stmt->fetchAll();
   </h6></div></div>
   ');
   }
-      $sqlOdg = "SELECT * FROM odgovori WHERE pitanjeId = :pitanjeId";
+      $sqlOdg = "SELECT * FROM odgovori WHERE pitanjeId = :pitanjeId AND testId = :testId";
       if($stmtOdg = $pdo->prepare($sqlOdg)){  
         $stmtOdg->bindParam(":pitanjeId", $param_pitanjeId, PDO::PARAM_INT);
+        $stmtOdg->bindParam(":testId", $param_testId, PDO::PARAM_INT);
 
         $param_pitanjeId = $pitanjeId;
+        $param_testId = trim($_GET['id']); 
         $stmtOdg->execute();
 
         $result = $stmtOdg->setFetchMode(PDO::FETCH_ASSOC);
